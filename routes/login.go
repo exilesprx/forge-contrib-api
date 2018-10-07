@@ -6,7 +6,7 @@ import (
 	"github.com/labstack/echo"
 )
 
-// Login route
+// Login allow a user to login
 func Login(context echo.Context) error {
 	// TODO: Login a user in
 	// TODO: Return a JWT token

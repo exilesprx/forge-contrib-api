@@ -6,12 +6,24 @@ import (
 	"github.com/labstack/echo"
 )
 
+var port string = "1323"
+
 func main() {
 	var app *echo.Echo = echo.New()
 
+	registerRoutes(app)
+
+	startApplication(app)
+}
+
+func registerRoutes(app *echo.Echo) {
+	app.POST("/register", routes.Register)
+
 	app.POST("/login", routes.Login)
+}
 
-	var startResponse error = app.Start(":1323")
+func startApplication(app *echo.Echo) {
+	var err error = app.Start(":1323")
 
-	app.Logger.Fatal(startResponse)
+	app.Logger.Fatal(err)
 }
