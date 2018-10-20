@@ -1,29 +1,42 @@
 package main
 
 import (
-	"github.com/exilesprx/forge-contrib-api/routes"
+	"os"
+
+	"github.com/exilesprx/forge-contrib-api/actions"
+	"github.com/exilesprx/forge-contrib-api/database"
 
 	"github.com/labstack/echo"
 )
 
-var port string = "1323"
-
 func main() {
-	var app *echo.Echo = echo.New()
+	app := echo.New()
 
-	registerRoutes(app)
+	connection := database.CreateConnection()
+
+	registerRoutes(app, connection)
 
 	startApplication(app)
 }
 
-func registerRoutes(app *echo.Echo) {
-	app.POST("/register", routes.Register)
+func registerRoutes(app *echo.Echo, connection database.Connection) {
 
-	app.POST("/login", routes.Login)
+	register := actions.Register{
+		Repository: database.UserRepository{
+			Connection: connection,
+		},
+	}
+
+	app.POST("/register", register.RegisterUser)
+
+	app.POST("/login", actions.Login)
 }
 
 func startApplication(app *echo.Echo) {
-	var err error = app.Start(":1323")
+
+	port := os.Getenv("ECHO_PORT")
+
+	err := app.Start(":" + port)
 
 	app.Logger.Fatal(err)
 }

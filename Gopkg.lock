@@ -155,11 +155,13 @@
 
 [[projects]]
   branch = "master"
-  digest = "1:773658e839757eac268eaaf2efca19f11695f49f52a65c18777e7673d27bfb86"
+  digest = "1:4540f9690098dde6d0cb647b1b76ecbbecc78b3ddb138370ee3a2c7a3a49e4ec"
   name = "golang.org/x/crypto"
   packages = [
     "acme",
     "acme/autocert",
+    "bcrypt",
+    "blowfish",
     "pbkdf2",
   ]
   pruneopts = "UT"
@@ -209,7 +211,9 @@
   analyzer-version = 1
   input-imports = [
     "github.com/labstack/echo",
+    "github.com/mongodb/mongo-go-driver/bson/objectid",
     "github.com/mongodb/mongo-go-driver/mongo",
+    "golang.org/x/crypto/bcrypt",
   ]
   solver-name = "gps-cdcl"
   solver-version = 1

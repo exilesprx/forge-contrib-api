@@ -3,45 +3,57 @@ package database
 import (
 	"context"
 	"log"
+	"os"
 
-	"github.com/exilesprx/forge-contrib-api/models"
 	"github.com/mongodb/mongo-go-driver/mongo"
 )
 
-var client mongo.Client
+const database = "forge-contrib"
+
+// Connection holds the mongo connection
+type Connection struct {
+	client mongo.Client
+	mongo.Database
+}
+
+// CreateConnection creates a new connection
+func CreateConnection() Connection {
+	connection := Connection{}
+
+	connection.connect()
+
+	return connection
+}
 
 // Connect Create a client and connect to MongoDB
-func Connect() mongo.Client {
-	client = createClient()
+func (connection *Connection) connect() {
 
-	var err error = client.Connect(context.TODO())
+	client := createClient()
+
+	err := client.Connect(context.TODO())
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	return client
+	connection.client = client
+	connection.Database = *client.Database(database)
+}
+
+// Disconnect disconnect the mongo connection
+func (connection *Connection) disconnect() {
+	connection.client.Disconnect(nil)
 }
 
 func createClient() mongo.Client {
-	client, err := mongo.NewClient("mongodb://mongo:27017")
+	host := os.Getenv("MONGO_HOST")
+	port := os.Getenv("MONGO_PORT")
+
+	client, err := mongo.NewClient("mongodb://" + host + ":" + port)
 
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	return *client
-}
-
-// CreateUser Creates a new user in the database
-func CreateUser(user *models.User) interface{} {
-	var collection *mongo.Collection = client.Database("forge-contrib").Collection("user")
-
-	res, err := collection.InsertOne(context.Background(), user)
-
-	if err != nil {
-		log.Fatal(err)
-	}
-
-	return res.InsertedID
 }
