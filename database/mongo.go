@@ -12,8 +12,8 @@ const database = "forge-contrib"
 
 // Connection holds the mongo connection
 type Connection struct {
-	client mongo.Client
-	mongo.Database
+	client *mongo.Client
+	*mongo.Database
 }
 
 // CreateConnection creates a new connection
@@ -37,7 +37,7 @@ func (connection *Connection) connect() {
 	}
 
 	connection.client = client
-	connection.Database = *client.Database(database)
+	connection.Database = client.Database(database)
 }
 
 // Disconnect disconnect the mongo connection
@@ -45,7 +45,7 @@ func (connection *Connection) disconnect() {
 	connection.client.Disconnect(nil)
 }
 
-func createClient() mongo.Client {
+func createClient() *mongo.Client {
 	host := os.Getenv("MONGO_HOST")
 	port := os.Getenv("MONGO_PORT")
 
@@ -55,5 +55,5 @@ func createClient() mongo.Client {
 		log.Fatal(err)
 	}
 
-	return *client
+	return client
 }

@@ -57,6 +57,6 @@ func (repo *UserRepository) FindUserByEmail(email values.Email) (models.Register
 	return user, nil
 }
 
-func getCollection(repo *UserRepository) mongo.Collection {
-	return *repo.Connection.Collection(collectionName)
+func getCollection(repo *UserRepository) *mongo.Collection {
+	return repo.Connection.Collection(collectionName)
 }
